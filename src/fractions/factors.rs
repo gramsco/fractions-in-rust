@@ -12,31 +12,32 @@ pub fn ppcm(a: u64, b: u64) -> u64 {
         return 0;
     }
     let (min, max) = min_max(a, b);
-    for el in min..max {
-        if el % a == 0 && el % b == 0 {
-            return el;
+    let mut i = min;
+
+    loop {
+        if i == max {
+            break;
         }
+        if i % a == 0 && i % b == 0 {
+            return i;
+        }
+        i += min
     }
     return max;
 }
 
 pub fn pgcd(a: u64, b: u64) -> u64 {
-    // EUCLID
     if b == 0 {
         return a;
     }
-    let q = a / b;
-    let r = a - (q * b);
-    return pgcd(b, r);
+    return pgcd(b, a % b);
 }
 
 #[cfg(test)]
-
 mod tests {
 
-    use crate::fractions::factors::ppcm;
-
     use super::pgcd;
+    use crate::fractions::factors::ppcm;
 
     #[test]
     fn ppcm_works() {
@@ -47,6 +48,10 @@ mod tests {
         let x = 2;
         let y = 4;
         assert_eq!(ppcm(x, y), 4);
+
+        let x = 17;
+        let y = 21;
+        assert_eq!(ppcm(x, y), x * y);
     }
 
     #[test]

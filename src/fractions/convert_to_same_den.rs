@@ -20,7 +20,6 @@ pub fn convert_to_same_denominator(
 }
 
 #[cfg(test)]
-
 mod tests {
     use crate::fractions::{convert_to_same_den::convert_to_same_denominator, fraction::Fraction};
 
