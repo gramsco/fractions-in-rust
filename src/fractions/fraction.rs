@@ -29,11 +29,15 @@ impl Fraction<u64> {
         fraction(self.numerator + value, self.denominator)
     }
 
-    fn multiply_by(&self, fraction: Fraction<u64>) -> Fraction<u64> {
-        Fraction::from(
-            self.numerator * fraction.numerator,
-            self.denominator * fraction.denominator,
+    fn multiply_by(&self, fraction2: Fraction<u64>) -> Fraction<u64> {
+        fraction(
+            self.numerator * fraction2.numerator,
+            self.denominator * fraction2.denominator,
         )
+    }
+
+    fn has_same_denominator(&self, fraction: Fraction<u64>) -> bool {
+        self.denominator == fraction.denominator
     }
 
     pub fn multiply_by_unity_fraction(&self, n: u64) -> Fraction<u64> {
@@ -49,7 +53,7 @@ impl Fraction<u64> {
             return self.clone();
         }
         let pgcd = pgcd(self.numerator, self.denominator);
-        Fraction::from(self.numerator / pgcd, self.denominator / pgcd)
+        fraction(self.numerator / pgcd, self.denominator / pgcd)
     }
 
     pub fn evaluate(&self) -> f64 {
@@ -83,7 +87,7 @@ impl Add<u64> for Fraction<u64> {
 impl Add<Self> for Fraction<u64> {
     type Output = Fraction<u64>;
     fn add(self, rhs: Self) -> Self::Output {
-        if self.denominator == rhs.denominator {
+        if self.has_same_denominator(rhs) {
             return self.add_to_numerator(rhs.numerator);
         }
         let (fraction1, fraction2) = convert_to_same_denominator(self, rhs);
@@ -93,8 +97,11 @@ impl Add<Self> for Fraction<u64> {
 
 impl PartialEq<Self> for Fraction<u64> {
     fn eq(&self, other: &Self) -> bool {
+        if self.has_same_denominator(*other) {
+            return self.numerator == other.numerator;
+        }
         let (f1, f2) = (self.simplify(), other.simplify());
-        f1.numerator == f2.numerator && f1.denominator == f2.denominator
+        f1.denominator == f2.denominator && f1.numerator == f2.numerator
     }
 }
 
@@ -107,14 +114,14 @@ impl PartialEq<f64> for Fraction<u64> {
 // Utils traits
 impl Debug for Fraction<u64> {
     fn fmt(&self, _f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        if self.is_simplified() {
-            print!("{}/{}", self.numerator, self.denominator);
-            return Ok(());
-        } else {
-            let simpl = self.simplify();
-            print!("{}/{} (<==> {simpl:?})", self.numerator, self.denominator,);
-            return Ok(());
+        match self.is_simplified() {
+            true => print!("{}/{}", self.numerator, self.denominator),
+            false => {
+                let simpl = self.simplify();
+                print!("{}/{} (<==> {simpl:?})", self.numerator, self.denominator);
+            }
         }
+        return Ok(());
     }
 }
 
