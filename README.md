@@ -25,3 +25,12 @@ fn main() {
     println!("{}", z.evaluate()) // 0.04
 }
 ```
+
+## Todo
+
+- adds substraction and division traits
+- implements macro ( ? ) :
+
+```rust
+let f1 = frac!(1/7);
+```
