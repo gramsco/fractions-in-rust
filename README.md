@@ -1,3 +1,8 @@
+# Simple operations on fractions implemented in TDD
+
+see main.rs:
+
+```rust
 mod fractions;
 use crate::fractions::fraction::fraction;
 
@@ -19,3 +24,4 @@ fn main() {
     println!("{z:?}"); // 2/50 (<==> 1/25)
     println!("{}", z.evaluate()) // 0.04
 }
+```

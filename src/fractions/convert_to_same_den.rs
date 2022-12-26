@@ -27,7 +27,7 @@ mod tests {
     use crate::fractions::{convert_to_same_den::convert_to_same_denominator, fraction::Fraction};
 
     #[test]
-    fn test_find_common_basis_returns_same_if_common_basis() {
+    fn leaves_intact_fractions_if_same_denominator() {
         let fraction1 = Fraction::from(1, 2);
         let fraction2 = Fraction::from(3, 2);
         let (fraction1, fraction2) = convert_to_same_denominator(fraction1, fraction2);
@@ -36,11 +36,20 @@ mod tests {
     }
 
     #[test]
-    fn test_find_common_basis() {
+    fn convert_one_fraction() {
         let fraction1 = Fraction::from(1, 2);
         let fraction2 = Fraction::from(1, 4);
         let (fraction1, fraction2) = convert_to_same_denominator(fraction1, fraction2);
         assert_eq!(fraction1, Fraction::from(2, 4));
         assert_eq!(fraction2, fraction2);
+    }
+
+    #[test]
+    fn convert_both_fractions() {
+        let fraction1 = Fraction::from(1, 3);
+        let fraction2 = Fraction::from(1, 4);
+        let (fraction1, fraction2) = convert_to_same_denominator(fraction1, fraction2);
+        assert_eq!(fraction1, Fraction::from(4, 12));
+        assert_eq!(fraction2, Fraction::from(3, 12));
     }
 }
