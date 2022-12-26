@@ -1,21 +1,27 @@
 pub fn ppcm(a: u64, b: u64) -> u64 {
-    if a == 0 || b == 0 {
-        return 0;
+    match (a, b) {
+        (0, _) => 0,
+        (_, 0) => 0,
+        (a, b) => {
+            if a == b {
+                return a;
+            }
+
+            let min = match a < b {
+                true => b,
+                false => a,
+            };
+
+            let max = a * b;
+
+            for el in (min..max).step_by(min.try_into().unwrap()) {
+                if el % a == 0 && el % b == 0 {
+                    return el;
+                };
+            }
+            return max;
+        }
     }
-
-    let min = match a < b {
-        true => b,
-        false => a,
-    };
-
-    let max = a * b;
-
-    for el in (min..max).step_by(min.try_into().unwrap()) {
-        if el % a == 0 && el % b == 0 {
-            return el;
-        };
-    }
-    return max;
 }
 
 pub fn pgcd(a: u64, b: u64) -> u64 {
