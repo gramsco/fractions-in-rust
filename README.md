@@ -11,7 +11,7 @@ fn main() {
     let f2 = fraction(2, 10);
 
     let x = f1.evaluate();
-    println!("{x}"); // 0.2
+    println!("{x}"); // 0.2f64
 
     let check = f1 == f2;
     let check2 = f1 == 0.2;
@@ -22,7 +22,7 @@ fn main() {
 
     let z = f1 * f2;
     println!("{z:?}"); // 2/50 (<==> 1/25)
-    println!("{}", z.evaluate()) // 0.04
+    println!("{}", z.evaluate()) // 0.04f64
 }
 ```
 
