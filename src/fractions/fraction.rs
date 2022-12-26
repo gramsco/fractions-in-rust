@@ -69,17 +69,15 @@ impl Add<f64> for Fraction<u64> {
 }
 
 impl Add<Self> for Fraction<u64> {
+    type Output = Fraction<u64>;
     fn add(self, rhs: Self) -> Self::Output {
+        if self.denominator == rhs.denominator {
+            return Fraction::from(self.numerator + rhs.numerator, self.denominator);
+        }
         let (fraction1, fraction2) =
             convert_to_same_denominator(Fraction::from(self.numerator, self.denominator), rhs);
-
-        Fraction::from(
-            fraction1.numerator + fraction2.numerator,
-            fraction1.denominator,
-        )
+        fraction1.add(fraction2)
     }
-
-    type Output = Fraction<u64>;
 }
 
 impl PartialEq<Self> for Fraction<u64> {
