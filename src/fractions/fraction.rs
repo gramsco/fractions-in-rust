@@ -25,6 +25,10 @@ impl Fraction<u64> {
         }
     }
 
+    pub fn add_to_numerator(&self, value: u64) -> Fraction<u64> {
+        fraction(self.numerator + value, self.denominator)
+    }
+
     fn multiply_by(&self, fraction: Fraction<u64>) -> Fraction<u64> {
         Fraction::from(
             self.numerator * fraction.numerator,
@@ -72,7 +76,7 @@ impl Add<Self> for Fraction<u64> {
     type Output = Fraction<u64>;
     fn add(self, rhs: Self) -> Self::Output {
         if self.denominator == rhs.denominator {
-            return Fraction::from(self.numerator + rhs.numerator, self.denominator);
+            return self.add_to_numerator(rhs.numerator);
         }
         let (fraction1, fraction2) = convert_to_same_denominator(self, rhs);
         fraction1.add(fraction2)
@@ -119,7 +123,7 @@ mod tests {
 
     #[cfg(test)]
     mod operations_on_fractions {
-        use crate::fractions::fraction::Fraction;
+        use crate::fractions::fraction::{fraction, Fraction};
 
         #[test]
         fn test_equality_when_obviously_equals() {
@@ -183,6 +187,14 @@ mod tests {
             let f1 = Fraction::from(1, 2);
             let f2 = Fraction::from(1, 4);
             assert_eq!(f1 + f2, Fraction::from(3, 4));
+        }
+
+        #[test]
+        fn test_add_to_numerator() {
+            let f1 = fraction(3, 4);
+            let r = f1.add_to_numerator(1);
+            assert_eq!(r, 1f64);
+            assert_eq!(r.add_to_numerator(1), fraction(5, 4));
         }
     }
 
