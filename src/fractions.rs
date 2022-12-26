@@ -71,8 +71,7 @@ impl Mul for Fraction<u64> {
 impl Add<f64> for Fraction<u64> {
     type Output = f64;
     fn add(self, rhs: f64) -> Self::Output {
-        let r = self.numerator as f64 / self.denominator as f64;
-        r + rhs
+        self.evaluate() + rhs
     }
 }
 
