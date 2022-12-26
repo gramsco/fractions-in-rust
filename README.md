@@ -1,6 +1,6 @@
 # Fractions in Rust :crab:
 
-This was mainly a POC to todo a bit of TDD in Rust, and to work with traits (debug, ops, etc). This should work well enough but this was not meant for production.
+This was mainly a POC for me to work a bit of TDD in Rust, and to work with traits (debug, ops, etc). This should work well enough but this was not meant for production.
 
 All fractions are `Fraction<u64>` for now and all fractions evaluate to `f64` type.
 
