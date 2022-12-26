@@ -11,17 +11,12 @@ pub fn ppcm(a: u64, b: u64) -> u64 {
     if a == 0 || b == 0 {
         return 0;
     }
-    let (min, max) = min_max(a, b);
-    let mut i = min;
 
-    loop {
-        if i == max {
-            break;
-        }
-        if i % a == 0 && i % b == 0 {
-            return i;
-        }
-        i += min
+    let (min, max) = min_max(a, b);
+    for el in (min..max).step_by(min.try_into().unwrap()) {
+        if el % a == 0 && el % b == 0 {
+            return el;
+        };
     }
     return max;
 }
