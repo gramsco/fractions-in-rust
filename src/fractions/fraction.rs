@@ -74,8 +74,7 @@ impl Add<Self> for Fraction<u64> {
         if self.denominator == rhs.denominator {
             return Fraction::from(self.numerator + rhs.numerator, self.denominator);
         }
-        let (fraction1, fraction2) =
-            convert_to_same_denominator(Fraction::from(self.numerator, self.denominator), rhs);
+        let (fraction1, fraction2) = convert_to_same_denominator(self, rhs);
         fraction1.add(fraction2)
     }
 }
