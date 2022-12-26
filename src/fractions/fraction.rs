@@ -9,9 +9,16 @@ pub struct Fraction<T> {
     pub denominator: T,
 }
 
-impl<T: PartialEq> PartialEq for Fraction<T> {
+impl PartialEq<Self> for Fraction<u64> {
     fn eq(&self, other: &Self) -> bool {
-        self.numerator == other.numerator && self.denominator == other.denominator
+        let (f1, f2) = (self.simplify(), other.simplify());
+        f1.numerator == f2.numerator && f1.denominator == f2.denominator
+    }
+}
+
+impl PartialEq<f64> for Fraction<u64> {
+    fn eq(&self, other: &f64) -> bool {
+        self.evaluate() == *other
     }
 }
 
@@ -112,6 +119,36 @@ mod tests {
     use crate::fractions::fraction::Fraction;
 
     #[test]
+    fn test_equality_when_obviously_equals() {
+        let f1 = Fraction::from(1, 5);
+        let f2 = Fraction::from(1, 5);
+        assert_eq!(f1, f2);
+    }
+
+    #[test]
+    fn test_equality_when_equals_when_simplified() {
+        let f1 = Fraction::from(1, 5);
+        let f2 = Fraction::from(2, 10);
+        let f3 = Fraction::from(10, 50);
+        assert_eq!(f1, f2);
+        assert_eq!(f1, f3);
+        assert_eq!(f2, f3);
+    }
+
+    #[test]
+    fn test_equality_when_not_equals() {
+        let f1 = Fraction::from(1, 5);
+        let f2 = Fraction::from(2, 6);
+        assert_ne!(f1, f2);
+    }
+
+    #[test]
+    fn test_equality_with_float() {
+        let f1 = Fraction::from(1, 5);
+        assert_eq!(f1, 0.2);
+    }
+
+    #[test]
     fn test_evaluate() {
         let f = Fraction::from(1, 5);
         assert_eq!(f.evaluate(), 0.2);
@@ -138,9 +175,10 @@ mod tests {
     }
 
     #[test]
+    #[should_panic]
     fn test_is_simplified_with_zero_denominator() {
         let fraction1 = Fraction::from(1, 0);
-        assert!(fraction1.is_simplified());
+        fraction1.is_simplified();
     }
 
     #[test]
