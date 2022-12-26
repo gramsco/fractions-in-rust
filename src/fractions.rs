@@ -117,10 +117,7 @@ impl Fraction<u64> {
 
     pub fn simplify(&self) -> Self {
         if self.is_simplified() {
-            return Fraction {
-                numerator: self.numerator,
-                denominator: self.denominator,
-            };
+            return self.clone();
         }
         let pgcd = pgcd(self.numerator, self.denominator);
         Fraction::new(self.numerator / pgcd, self.denominator / pgcd)
@@ -158,77 +155,38 @@ mod tests {
 
     #[test]
     fn test_is_simplified() {
-        let fraction1 = Fraction {
-            numerator: 1,
-            denominator: 2,
-        };
+        let fraction1 = Fraction::new(1, 2);
         assert!(fraction1.is_simplified())
     }
 
     #[test]
 
     fn test_is_simplified_with_zero_denominator() {
-        let fraction1 = Fraction {
-            numerator: 1,
-            denominator: 0,
-        };
+        let fraction1 = Fraction::new(1, 0);
         assert!(fraction1.is_simplified());
     }
 
     #[test]
     fn test_is_simplified_with_non_simplified() {
-        let fraction1 = Fraction {
-            numerator: 2,
-            denominator: 4,
-        };
+        let fraction1 = Fraction::new(2, 4);
         assert_eq!(fraction1.is_simplified(), false)
     }
 
     #[test]
     fn test_find_common_basis_returns_same_if_common_basis() {
-        let fraction1 = Fraction {
-            numerator: 1,
-            denominator: 2,
-        };
-        let fraction2 = Fraction {
-            numerator: 3,
-            denominator: 2,
-        };
+        let fraction1 = Fraction::new(1, 2);
+        let fraction2 = Fraction::new(3, 2);
         let (fraction1, fraction2) = find_common_basis(fraction1, fraction2);
-        assert_eq!(
-            fraction1,
-            Fraction {
-                numerator: 1,
-                denominator: 2
-            }
-        );
-        assert_eq!(
-            fraction2,
-            Fraction {
-                numerator: 3,
-                denominator: 2
-            }
-        );
+        assert_eq!(fraction1, fraction1);
+        assert_eq!(fraction2, Fraction::new(3, 2));
     }
 
     #[test]
     fn test_find_common_basis() {
-        let fraction1 = Fraction {
-            numerator: 1,
-            denominator: 2,
-        };
-        let fraction2 = Fraction {
-            numerator: 1,
-            denominator: 4,
-        };
+        let fraction1 = Fraction::new(1, 2);
+        let fraction2 = Fraction::new(1, 4);
         let (fraction1, fraction2) = find_common_basis(fraction1, fraction2);
-        assert_eq!(
-            fraction1,
-            Fraction {
-                numerator: 2,
-                denominator: 4
-            },
-        );
+        assert_eq!(fraction1, Fraction::new(2, 4));
         assert_eq!(fraction2, fraction2);
     }
 
@@ -238,23 +196,11 @@ mod tests {
         let f2 = Fraction::new(2, 2);
         assert_eq!(f1 + f2, Fraction::new(3, 2));
     }
+
     #[test]
     fn fractions_with_different_denominator() {
-        let f1 = Fraction {
-            numerator: 1,
-            denominator: 2,
-        };
-        let f2 = Fraction {
-            numerator: 1,
-            denominator: 4,
-        };
-
-        assert_eq!(
-            f1 + f2,
-            Fraction {
-                numerator: 3,
-                denominator: 4
-            }
-        );
+        let f1 = Fraction::new(1, 2);
+        let f2 = Fraction::new(1, 4);
+        assert_eq!(f1 + f2, Fraction::new(3, 4));
     }
 }
