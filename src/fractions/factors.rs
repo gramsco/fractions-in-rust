@@ -1,18 +1,15 @@
-fn min_max(a: u64, b: u64) -> (u64, u64) {
-    let max = a * b;
-    let min = match a < b {
-        true => b,
-        false => a,
-    };
-    (min, max)
-}
-
 pub fn ppcm(a: u64, b: u64) -> u64 {
     if a == 0 || b == 0 {
         return 0;
     }
 
-    let (min, max) = min_max(a, b);
+    let min = match a < b {
+        true => b,
+        false => a,
+    };
+
+    let max = a * b;
+
     for el in (min..max).step_by(min.try_into().unwrap()) {
         if el % a == 0 && el % b == 0 {
             return el;
