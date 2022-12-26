@@ -33,7 +33,8 @@ pub fn pgcd(a: u64, b: u64) -> u64 {
 #[cfg(test)]
 
 mod tests {
-    use crate::factors::ppcm;
+
+    use crate::fractions::factors::ppcm;
 
     use super::pgcd;
 

@@ -3,11 +3,10 @@ use std::{
     ops::{Add, Mul},
 };
 
-use crate::factors::{pgcd, ppcm};
-
+use super::{convert_to_same_den::convert_to_same_denominator, factors::pgcd};
 pub struct Fraction<T> {
-    numerator: T,
-    denominator: T,
+    pub numerator: T,
+    pub denominator: T,
 }
 
 impl<T: PartialEq> PartialEq for Fraction<T> {
@@ -33,29 +32,8 @@ impl Copy for Fraction<u64> {}
 
 impl Clone for Fraction<u64> {
     fn clone(&self) -> Self {
-        Fraction::new(self.numerator, self.denominator)
+        Fraction::from(self.numerator, self.denominator)
     }
-}
-
-pub fn find_common_basis(
-    fraction1: Fraction<u64>,
-    fraction2: Fraction<u64>,
-) -> (Fraction<u64>, Fraction<u64>) {
-    let (fraction1, fraction2) = (fraction1.simplify(), fraction2.simplify());
-
-    if fraction1.denominator == fraction2.denominator {
-        return (fraction1, fraction2);
-    }
-
-    let pcm = ppcm(fraction1.denominator, fraction2.denominator);
-
-    let f1_multiplier = pcm / fraction1.denominator;
-    let f2_multiplier = pcm / fraction2.denominator;
-
-    let fraction1 = fraction1.multiply_by_unity_fraction(f1_multiplier);
-    let fraction2 = fraction2.multiply_by_unity_fraction(f2_multiplier);
-
-    (fraction1, fraction2)
 }
 
 #[derive(Debug)]
@@ -78,9 +56,9 @@ impl Add<f64> for Fraction<u64> {
 impl Add<Self> for Fraction<u64> {
     fn add(self, rhs: Self) -> Self::Output {
         let (fraction1, fraction2) =
-            find_common_basis(Fraction::new(self.numerator, self.denominator), rhs);
+            convert_to_same_denominator(Fraction::from(self.numerator, self.denominator), rhs);
 
-        Fraction::new(
+        Fraction::from(
             fraction1.numerator + fraction2.numerator,
             fraction1.denominator,
         )
@@ -90,7 +68,7 @@ impl Add<Self> for Fraction<u64> {
 }
 
 impl Fraction<u64> {
-    pub fn new(numerator: u64, denominator: u64) -> Fraction<u64> {
+    pub fn from(numerator: u64, denominator: u64) -> Fraction<u64> {
         if denominator == 0 {
             panic!()
         }
@@ -101,14 +79,14 @@ impl Fraction<u64> {
     }
 
     fn multiply_by(&self, fraction: Fraction<u64>) -> Fraction<u64> {
-        Fraction::new(
+        Fraction::from(
             self.numerator * fraction.numerator,
             self.denominator * fraction.denominator,
         )
     }
 
-    fn multiply_by_unity_fraction(&self, n: u64) -> Fraction<u64> {
-        self.multiply_by(Fraction::new(n, n))
+    pub fn multiply_by_unity_fraction(&self, n: u64) -> Fraction<u64> {
+        self.multiply_by(Fraction::from(n, n))
     }
 
     pub fn is_simplified(&self) -> bool {
@@ -120,7 +98,7 @@ impl Fraction<u64> {
             return self.clone();
         }
         let pgcd = pgcd(self.numerator, self.denominator);
-        Fraction::new(self.numerator / pgcd, self.denominator / pgcd)
+        Fraction::from(self.numerator / pgcd, self.denominator / pgcd)
     }
 
     pub fn evaluate(&self) -> f64 {
@@ -131,17 +109,17 @@ impl Fraction<u64> {
 #[cfg(test)]
 
 mod tests {
-    use crate::{find_common_basis, Fraction};
+    use crate::fractions::{convert_to_same_den::convert_to_same_denominator, fraction::Fraction};
 
     #[test]
     fn test_evaluate() {
-        let f = Fraction::new(1, 5);
+        let f = Fraction::from(1, 5);
         assert_eq!(f.evaluate(), 0.2);
     }
 
     #[test]
     fn adds_with_float() {
-        let a = Fraction::new(1, 5);
+        let a = Fraction::from(1, 5);
         let b = 0.2;
         assert_eq!(a + b, 0.4);
     }
@@ -149,58 +127,39 @@ mod tests {
     #[test]
     fn test_multiply_by_unity_fraction() {
         let n = 3;
-        let f = Fraction::new(3, 5);
-        assert_eq!(f.multiply_by_unity_fraction(n), Fraction::new(9, 15));
+        let f = Fraction::from(3, 5);
+        assert_eq!(f.multiply_by_unity_fraction(n), Fraction::from(9, 15));
     }
 
     #[test]
     fn test_is_simplified() {
-        let fraction1 = Fraction::new(1, 2);
+        let fraction1 = Fraction::from(1, 2);
         assert!(fraction1.is_simplified())
     }
 
     #[test]
-
     fn test_is_simplified_with_zero_denominator() {
-        let fraction1 = Fraction::new(1, 0);
+        let fraction1 = Fraction::from(1, 0);
         assert!(fraction1.is_simplified());
     }
 
     #[test]
     fn test_is_simplified_with_non_simplified() {
-        let fraction1 = Fraction::new(2, 4);
+        let fraction1 = Fraction::from(2, 4);
         assert_eq!(fraction1.is_simplified(), false)
     }
 
     #[test]
-    fn test_find_common_basis_returns_same_if_common_basis() {
-        let fraction1 = Fraction::new(1, 2);
-        let fraction2 = Fraction::new(3, 2);
-        let (fraction1, fraction2) = find_common_basis(fraction1, fraction2);
-        assert_eq!(fraction1, fraction1);
-        assert_eq!(fraction2, Fraction::new(3, 2));
-    }
-
-    #[test]
-    fn test_find_common_basis() {
-        let fraction1 = Fraction::new(1, 2);
-        let fraction2 = Fraction::new(1, 4);
-        let (fraction1, fraction2) = find_common_basis(fraction1, fraction2);
-        assert_eq!(fraction1, Fraction::new(2, 4));
-        assert_eq!(fraction2, fraction2);
-    }
-
-    #[test]
     fn fractions_with_same_denominator() {
-        let f1 = Fraction::new(1, 2);
-        let f2 = Fraction::new(2, 2);
-        assert_eq!(f1 + f2, Fraction::new(3, 2));
+        let f1 = Fraction::from(1, 2);
+        let f2 = Fraction::from(2, 2);
+        assert_eq!(f1 + f2, Fraction::from(3, 2));
     }
 
     #[test]
     fn fractions_with_different_denominator() {
-        let f1 = Fraction::new(1, 2);
-        let f2 = Fraction::new(1, 4);
-        assert_eq!(f1 + f2, Fraction::new(3, 4));
+        let f1 = Fraction::from(1, 2);
+        let f2 = Fraction::from(1, 4);
+        assert_eq!(f1 + f2, Fraction::from(3, 4));
     }
 }
