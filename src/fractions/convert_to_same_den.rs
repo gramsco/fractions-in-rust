@@ -4,21 +4,19 @@ pub fn convert_to_same_denominator(
     fraction1: Fraction<u64>,
     fraction2: Fraction<u64>,
 ) -> (Fraction<u64>, Fraction<u64>) {
-    let (fraction1, fraction2) = (fraction1.simplify(), fraction2.simplify());
-
     if fraction1.denominator == fraction2.denominator {
         return (fraction1, fraction2);
     }
 
     let pcm = ppcm(fraction1.denominator, fraction2.denominator);
 
-    let f1_multiplier = pcm / fraction1.denominator;
-    let f2_multiplier = pcm / fraction2.denominator;
+    let f1_coeff = pcm / fraction1.denominator;
+    let f2_coeff = pcm / fraction2.denominator;
 
-    let fraction1 = fraction1.multiply_by_unity_fraction(f1_multiplier);
-    let fraction2 = fraction2.multiply_by_unity_fraction(f2_multiplier);
-
-    (fraction1, fraction2)
+    (
+        fraction1.multiply_by_unity_fraction(f1_coeff),
+        fraction2.multiply_by_unity_fraction(f2_coeff),
+    )
 }
 
 #[cfg(test)]
@@ -33,6 +31,15 @@ mod tests {
         let (fraction1, fraction2) = convert_to_same_denominator(fraction1, fraction2);
         assert_eq!(fraction1, fraction1);
         assert_eq!(fraction2, Fraction::from(3, 2));
+    }
+
+    #[test]
+    fn checks_for_same_fraction_but_not_simplified() {
+        let fraction1 = Fraction::from(1, 2);
+        let fraction2 = Fraction::from(2, 4);
+        let (fraction1, fraction2) = convert_to_same_denominator(fraction1, fraction2);
+        assert_eq!(fraction1, Fraction::from(2, 4));
+        assert_eq!(fraction2, fraction2);
     }
 
     #[test]
