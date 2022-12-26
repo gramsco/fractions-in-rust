@@ -20,18 +20,23 @@ fn main() {
     let f2 = fraction(2, 10);
 
     let x = f1.evaluate();
-    println!("{x}"); // "0.2" (f64)
+    println!("{x}"); // 0.2
 
     let check = f1 == f2;
     let check2 = f1 == 0.2;
-    println!("{check}, {check2}"); // "true, true"
+    println!("{check}, {check2}"); // true, true
 
     let y = f1 + f2;
-    println!("{y:?}"); // "2/5" (debug)
+    println!("{y:?}"); // 2/5
 
     let z = f1 * f2;
-    println!("{z:?}"); // "2/50 (<==> 1/25)" (debug)
-    println!("{}", z.evaluate()) // "0.04" (f64)
+    println!("{z:?}"); // 2/50 (<==> 1/25)
+    println!("{}", z.evaluate()); // 0.04
+
+    let f1 = fraction(2, 3);
+    let n = 1;
+    let r = f1 + n;
+    println!("{r:?}"); // 5/3
 }
 ```
 

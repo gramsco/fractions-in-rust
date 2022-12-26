@@ -17,5 +17,10 @@ fn main() {
 
     let z = f1 * f2;
     println!("{z:?}"); // 2/50 (<==> 1/25)
-    println!("{}", z.evaluate()) // 0.04
+    println!("{}", z.evaluate()); // 0.04
+
+    let f1 = fraction(2, 3);
+    let n = 1;
+    let r = f1 + n;
+    println!("{r:?}"); // 5/3
 }

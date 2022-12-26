@@ -72,6 +72,14 @@ impl Add<f64> for Fraction<u64> {
     }
 }
 
+impl Add<u64> for Fraction<u64> {
+    type Output = Fraction<u64>;
+    fn add(self, rhs: u64) -> Self::Output {
+        let as_fraction = fraction(rhs * self.denominator, self.denominator);
+        self + as_fraction
+    }
+}
+
 impl Add<Self> for Fraction<u64> {
     type Output = Fraction<u64>;
     fn add(self, rhs: Self) -> Self::Output {
@@ -130,6 +138,13 @@ mod tests {
             let f1 = Fraction::from(1, 5);
             let f2 = Fraction::from(1, 5);
             assert_eq!(f1, f2);
+        }
+
+        #[test]
+        fn test_adds_unsigned() {
+            let f1 = fraction(2, 3);
+            let u = 2;
+            assert_eq!(f1 + u, fraction(8, 3));
         }
 
         #[test]
