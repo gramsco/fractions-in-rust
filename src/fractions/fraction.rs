@@ -109,7 +109,7 @@ impl Fraction<u64> {
 #[cfg(test)]
 
 mod tests {
-    use crate::fractions::{convert_to_same_den::convert_to_same_denominator, fraction::Fraction};
+    use crate::fractions::fraction::Fraction;
 
     #[test]
     fn test_evaluate() {

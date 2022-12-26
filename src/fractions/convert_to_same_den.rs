@@ -24,10 +24,7 @@ pub fn convert_to_same_denominator(
 #[cfg(test)]
 
 mod tests {
-    use crate::fractions::{
-        convert_to_same_den::{self, convert_to_same_denominator},
-        fraction::Fraction,
-    };
+    use crate::fractions::{convert_to_same_den::convert_to_same_denominator, fraction::Fraction};
 
     #[test]
     fn test_find_common_basis_returns_same_if_common_basis() {
