@@ -1,4 +1,4 @@
-# Simple operations on fractions implemented in TDD
+# Fractions in Rust :crab:
 
 This was mainly a POC to todo a bit of TDD in Rust, and to work with traits (debug, ops, etc). This should work well enough but this was not meant for production.
 
